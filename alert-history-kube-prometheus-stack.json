@@ -1,0 +1,585 @@
+{
+  "__elements": {},
+  "__inputs": [
+    {
+      "description": "",
+      "label": "Prometheus",
+      "name": "DS_PROMETHEUS",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus",
+      "type": "datasource"
+    }
+  ],
+  "__requires": [
+    {
+      "id": "grafana",
+      "name": "Grafana",
+      "type": "grafana",
+      "version": "13.2.0"
+    },
+    {
+      "id": "prometheus",
+      "name": "Prometheus",
+      "type": "datasource",
+      "version": "13.1.7"
+    },
+    {
+      "id": "table",
+      "name": "Table",
+      "type": "panel",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "Alerts that are currently in firing state, taken directly from Prometheus' ALERTS metric (instant query). Refreshes with the dashboard's refresh interval (default: every minute).",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Severity"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "critical": {
+                        "color": "red",
+                        "text": "🔴 critical"
+                      }
+                    },
+                    "type": "value"
+                  },
+                  {
+                    "options": {
+                      "warning": {
+                        "color": "orange",
+                        "text": "🟠 warning"
+                      }
+                    },
+                    "type": "value"
+                  },
+                  {
+                    "options": {
+                      "info": {
+                        "color": "blue",
+                        "text": "🔵 info"
+                      }
+                    },
+                    "type": "value"
+                  },
+                  {
+                    "options": {
+                      "none": {
+                        "color": "text",
+                        "text": "⚪ none"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Checked at"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dateTimeAsLocal"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "ALERTS{alertstate=\"firing\"}",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "Currently Active Problems (live snapshot)",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Value": true,
+              "__name__": true,
+              "alertstate": true,
+              "condition": true,
+              "deployment": true,
+              "endpoint": true,
+              "job": true,
+              "job_name": true,
+              "long": true,
+              "metrics_path": true,
+              "node": true,
+              "persistentvolumeclaim": true,
+              "reason": true,
+              "service": true,
+              "short": true,
+              "uid": true
+            },
+            "indexByName": {
+              "Time": 0,
+              "alertname": 2,
+              "container": 5,
+              "instance": 6,
+              "namespace": 3,
+              "pod": 4,
+              "severity": 1
+            },
+            "renameByName": {
+              "Time": "Checked at",
+              "alertname": "Problem name",
+              "container": "Container",
+              "instance": "Instance",
+              "namespace": "Namespace",
+              "pod": "Pod",
+              "severity": "Severity"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "Each row is one firing problem episode: when it started and when it was last observed in firing state. 'Pending' alerts (not yet notified) are not included. The 'Last seen' column helps judge whether the problem is likely still active (if very recent) or already resolved.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Problem name"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Problem name"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Namespace"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Namespace"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Pod"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Pod"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Container"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Container"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Instance"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Instance"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Severity"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Severity"
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "critical": {
+                        "color": "red",
+                        "text": "🔴 critical"
+                      }
+                    },
+                    "type": "value"
+                  },
+                  {
+                    "options": {
+                      "warning": {
+                        "color": "orange",
+                        "text": "🟠 warning"
+                      }
+                    },
+                    "type": "value"
+                  },
+                  {
+                    "options": {
+                      "info": {
+                        "color": "blue",
+                        "text": "🔵 info"
+                      }
+                    },
+                    "type": "value"
+                  },
+                  {
+                    "options": {
+                      "none": {
+                        "color": "text",
+                        "text": "⚪ none"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Started"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Started"
+              },
+              {
+                "id": "unit",
+                "value": "dateTimeAsLocal"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Last seen"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Last seen"
+              },
+              {
+                "id": "unit",
+                "value": "dateTimeFromNow"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Duration"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dtdurationms"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "id": 2,
+      "options": {
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Started"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "ALERTS{alertstate=\"firing\"}",
+          "format": "table",
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Problem History (last 7 days, based on ALERTS metric)",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {}
+        },
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "ALERTS": {
+                "aggregations": [],
+                "operation": ""
+              },
+              "Time": {
+                "aggregations": [
+                  "first",
+                  "last"
+                ],
+                "operation": "aggregate"
+              },
+              "__name__": {
+                "aggregations": [],
+                "operation": ""
+              },
+              "alertname": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alertstate": {
+                "aggregations": [],
+                "operation": ""
+              },
+              "condition": {
+                "aggregations": [],
+                "operation": ""
+              },
+              "container": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "deployment": {
+                "aggregations": [],
+                "operation": ""
+              },
+              "endpoint": {
+                "aggregations": [],
+                "operation": ""
+              },
+              "instance": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "job": {
+                "aggregations": [],
+                "operation": ""
+              },
+              "job_name": {
+                "aggregations": [],
+                "operation": ""
+              },
+              "long": {
+                "aggregations": [],
+                "operation": ""
+              },
+              "metrics_path": {
+                "aggregations": [],
+                "operation": ""
+              },
+              "namespace": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "node": {
+                "aggregations": [],
+                "operation": ""
+              },
+              "persistentvolumeclaim": {
+                "aggregations": [],
+                "operation": ""
+              },
+              "pod": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "reason": {
+                "aggregations": [],
+                "operation": ""
+              },
+              "service": {
+                "aggregations": [],
+                "operation": ""
+              },
+              "severity": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "short": {
+                "aggregations": [],
+                "operation": ""
+              },
+              "uid": {
+                "aggregations": [],
+                "operation": ""
+              }
+            }
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "Duration",
+            "binary": {
+              "left": "Time (last)",
+              "operator": "-",
+              "right": "Time (first)"
+            },
+            "mode": "binary",
+            "replaceFields": false
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "desc": true,
+                "field": "Time (first)"
+              }
+            ]
+          }
+        }
+      ],
+      "type": "table"
+    }
+  ],
+  "refresh": "1m",
+  "schemaVersion": 42,
+  "tags": [
+    "alert-history",
+    "custom",
+    "kubernetes",
+    "prometheus",
+    "alertmanager",
+    "kube-prometheus-stack",
+    "alerting"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-7d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Alert History for kube-prometheus-stack (Zabbix-style)",
+  "uid": "alert-hist-kube-prometheus-stack-en",
+  "version": 1,
+  "weekStart": ""
+}
