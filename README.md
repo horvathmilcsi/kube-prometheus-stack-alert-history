@@ -42,14 +42,14 @@ duration yet) are intentionally excluded — only alerts that actually reached
 
 | File | Purpose |
 |---|---|
-| `alert-history.json` | Portable dashboard export (`${DS_PROMETHEUS}` templated) for manual **Import** into any Grafana, or for uploading to the grafana.com gallery. |
-| `alert-history-configmap.yaml` | Kubernetes `ConfigMap` for GitOps-style provisioning via the kube-prometheus-stack Grafana **sidecar** (`grafana_dashboard: "1"` label). |
+| `alert-history-kube-prometheus-stack.json` | Portable dashboard export (`${DS_PROMETHEUS}` templated) for manual **Import** into any Grafana, or for uploading to the grafana.com gallery. |
+| `alert-history-kube-prometheus-stack-configmap.yaml` | Kubernetes `ConfigMap` for GitOps-style provisioning via the kube-prometheus-stack Grafana **sidecar** (`grafana_dashboard: "1"` label). |
 
 ## Setup
 
 ### Option A — Manual import
 1. In Grafana: **Dashboards → New → Import**.
-2. Upload `alert-history.json`.
+2. Upload `alert-history-kube-prometheus-stack.json`.
 3. When prompted, pick your Prometheus data source.
 4. Done — no dashboard variables, no additional configuration needed.
 
@@ -60,7 +60,7 @@ kube-prometheus-stack's Grafana pod ships with a sidecar
 automatically — no Helm upgrade needed.
 
 ```bash
-kubectl apply -f alert-history-configmap.yaml -n <kube-prometheus-stack-namespace>
+kubectl apply -f alert-history-kube-prometheus-stack-configmap.yaml -n <kube-prometheus-stack-namespace>
 ```
 
 > **Note:** this file already has its `datasource.uid` resolved to the literal

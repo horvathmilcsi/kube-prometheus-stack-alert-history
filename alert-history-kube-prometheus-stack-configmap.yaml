@@ -571,7 +571,12 @@ data:
       "schemaVersion": 42,
       "tags": [
         "alert-history",
-        "custom"
+        "custom",
+        "kubernetes",
+        "prometheus",
+        "alertmanager",
+        "kube-prometheus-stack",
+        "alerting"
       ],
       "templating": {
         "list": []
@@ -582,8 +587,8 @@ data:
       },
       "timepicker": {},
       "timezone": "browser",
-      "title": "Alert History (Zabbix-style)",
-      "uid": "alert-hist-en",
+      "title": "Alert History for kube-prometheus-stack (Zabbix-style)",
+      "uid": "alert-hist-kube-prometheus-stack-en",
       "version": 7,
       "weekStart": ""
     }
